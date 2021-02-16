@@ -1,0 +1,47 @@
+﻿@page "/issuedemo"
+@inject HttpClient Http
+@using IssueRepro30147.Models;
+@using IssueRepro30147.Services;
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates the issue.</p>
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button @onclick="ConvertListToDictionary">Convert to dictionary</button>
+}
+
+@code {
+    private List<Item> items;
+    [Inject] private ISomeService SomeService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await Http.GetFromJsonAsync<List<Item>>("sample-data/items.json");
+    }
+
+    private void ConvertListToDictionary()
+    {
+        SomeService.ConvertToDictionary(items);
+    }
+}
